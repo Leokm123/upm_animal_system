@@ -9,9 +9,15 @@ use Illuminate\Support\Facades\Auth;
 class SightingController extends Controller {
     // 构造函数：仅志愿者可访问
     public function __construct() {
-        $this->middleware('auth');
+        // 替换默认auth中间件，兼容多Guard登录检查
         $this->middleware(function ($request, $next) {
-            if (Auth::user() instanceof \App\Models\Volunteer) {
+            // 1. 检查是否有任意Guard登录
+            if (!$this->isAnyGuardLoggedIn()) {
+                return redirect()->route('login')->withErrors('请先登录系统！');
+            }
+            // 2. 检查是否为志愿者
+            $user = $this->getLoggedInUser();
+            if ($user instanceof \App\Models\Volunteer) {
                 return $next($request);
             }
             return redirect()->route('dashboard')->withErrors('仅志愿者可上报目击！');
@@ -63,7 +69,7 @@ class SightingController extends Controller {
 
     // 3. 查看志愿者的所有目击记录
     public function index() {
-        $sightings = Sighting::where('volunteerId', Auth::user()->id)->orderBy('sightingTime', 'desc')->get();
+        $user = $this->getLoggedInUser();
         return view('sighting.index', compact('sightings'));
     }
 }

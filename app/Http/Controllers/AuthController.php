@@ -52,7 +52,7 @@ class AuthController extends Controller
         ])->withInput(); // Echo back the entered username to improve user experience
     }
 
-    private function getUserRole($user)
+    protected function getUserRole($user): string
     {
         if ($user instanceof Manager) return 'manager';
         if ($user instanceof Volunteer) return 'volunteer';

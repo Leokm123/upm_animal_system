@@ -2,22 +2,12 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\HomeController;
 
-// Login page
-Route::get('/login', function () {
-    return view('auth.login');
-})->name('login');
-
-// Login submit
-Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
-
-// Dashboard: allow all three guards
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->name('dashboard')->middleware('auth:web,manager,volunteer');
-
-// Logout
-Route::get('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth:web,manager,volunteer');
+Route::get('/login', function () { return view('login'); })->name('login');
+Route::post('/login', [AuthController::class, 'login']);
+Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::get('/dashboard', [HomeController::class, 'dashboard'])->name('dashboard');
 
 use App\Http\Controllers\AnimalProfileController; // 引入动物档案控制器
 use App\Http\Controllers\SightingController; // 引入目击控制器
@@ -36,7 +26,9 @@ Route::get('/sightings', [SightingController::class, 'index'])->name('sighting.i
 // 1. 档案匹配（AJAX接口，无需视图）
 Route::post('/animal/match', [AnimalProfileController::class, 'matchProfiles'])->name('animal.match');
 // 2. 显示创建档案表单
-Route::get('/animal/create', [AnimalProfileController::class, 'createProfileForm'])->name('animal.create');
+Route::get('/animal/create', function () {
+    return view('animal.create');
+})->name('animal.create')->middleware('auth.any');
 // 3. 提交创建档案
 Route::post('/animal/store', [AnimalProfileController::class, 'createProfile'])->name('animal.store');
 // 4. 查看档案详情
@@ -45,6 +37,6 @@ Route::get('/animal/{animalId}', [AnimalProfileController::class, 'show'])->name
 Route::get('/animal/{animalId}/edit', function ($animalId) {
     $animal = App\Models\Animal::findOrFail($animalId);
     return view('animal.edit', compact('animal'));
-})->name('animal.edit')->middleware('auth');
+})->name('animal.edit')->middleware('auth.any');
 // 6. 提交更新档案
 Route::post('/animal/{animalId}/update', [AnimalProfileController::class, 'updateProfile'])->name('animal.update');
