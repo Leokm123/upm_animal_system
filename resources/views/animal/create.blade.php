@@ -35,7 +35,7 @@
             <!-- Species input field -->
             <div class="form-group">
                 <label>Species</label>
-                <input type="text" name="species" placeholder="e.g.: Cat/Dog/Stray Cat (Orange)" required>
+                <input type="text" name="species" placeholder="e.g.: Cat/Dog" required>
             </div>
 
             <!-- Gender selection -->

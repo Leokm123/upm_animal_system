@@ -7,72 +7,127 @@ use App\Models\Animal;
 use Illuminate\Support\Facades\Auth;
 
 class SightingController extends Controller {
-    // 构造函数：仅志愿者可访问
+    
+    /**
+     * Constructor: Restrict access to volunteers only
+     * Implements custom middleware for multi-guard authentication
+     */
     public function __construct() {
-        // 替换默认auth中间件，兼容多Guard登录检查
+        // Replace default auth middleware to support multi-guard login verification
         $this->middleware(function ($request, $next) {
-            // 1. 检查是否有任意Guard登录
-            if (!$this->isAnyGuardLoggedIn()) {
-                return redirect()->route('login')->withErrors('请先登录系统！');
+            // 1. Check if any guard is logged in
+            if (! $this->isAnyGuardLoggedIn()) {
+                return redirect()->route('login')->withErrors('Please login to the system first!');
             }
-            // 2. 检查是否为志愿者
+            
+            // 2. Verify user is a volunteer
             $user = $this->getLoggedInUser();
             if ($user instanceof \App\Models\Volunteer) {
                 return $next($request);
             }
-            return redirect()->route('dashboard')->withErrors('仅志愿者可上报目击！');
+            
+            return redirect()->route('dashboard')->withErrors('Only volunteers can report sightings!');
         });
     }
 
-    // 1. 显示上报目击表单
+    /**
+     * Display the animal sighting report form
+     * Shows form for volunteers to submit new animal sightings
+     */
     public function create() {
         return view('sighting.report');
     }
 
-    // 2. 提交目击记录（核心逻辑）
+    /**
+     * Submit animal sighting record (Core functionality)
+     * Processes sighting data and either updates existing animal profile or creates new one
+     */
     public function reportSighting(Request $request) {
+        // Validate sighting form input
         $validated = $request->validate([
-            'animal_id' => 'nullable|exists:animals,animalId', // 已识别动物ID（可选）
-            'photo_urls' => 'required|array|min:1',
-            'photo_urls.*' => 'url', // 照片URL（实际可改为文件上传）
+            'animal_id' => 'nullable|exists:animals,animalId',
+            'photo_urls' => 'required|string', 
             'location' => 'required|string',
             'sighting_time' => 'required|date',
             'status' => 'nullable|string',
             'notes' => 'nullable|string'
-        ]);
+    ]);
+        $photoUrls = array_map('trim', explode(',', $validated['photo_urls']));
+    
+    // Validate each URL
+        foreach ($photoUrls as $url) {
+            if (!filter_var($url, FILTER_VALIDATE_URL)) {
+                return back()->withErrors(['photo_urls' => 'All photo URLs must be valid URLs']);
+            }
+        }
 
-        // 创建目击记录
+        // Create new sighting record
         $sighting = Sighting::create([
-            'sightingId' => 'SIGHT_' . uniqid(),
-            'animalId' => $validated['animal_id'] ?? 'UNIDENTIFIED',
+            'sightingId' => 'SIGHT_' . uniqid(), // Generate unique sighting ID
+            'animalId' => $validated['animal_id'] ?? 'UNIDENTIFIED', // Link to animal or mark as unidentified
             'sightingTime' => $validated['sighting_time'],
             'location' => $validated['location'],
-            'photoUrls' => $validated['photo_urls'],
-            'status' => $validated['status'] ?? 'healthy',
+            'photoUrls' => $photoUrls,
+            'status' => $validated['status'] ?? 'healthy', // Default to healthy if not specified
             'notes' => $validated['notes']
         ]);
 
-        // 若关联动物，更新其最后目击信息
+        // If animal is identified, update its last sighting information
         if (!empty($validated['animal_id'])) {
             Animal::find($validated['animal_id'])->update([
                 'last_sighting_time' => $validated['sighting_time'],
                 'last_sighting_location' => $validated['location']
             ]);
+            
             return redirect()->route('animal.show', $validated['animal_id'])
-                ->with('success', '目击上报成功！动物档案已更新');
+                ->with('success', 'Sighting reported successfully! Animal profile updated.');
         }
 
-        // 未识别动物：跳转到创建档案页面（关联当前目击ID）
+        // Unidentified animal:  Redirect to create profile page (link current sighting ID)
         return redirect()->route('animal.create', ['initial_sighting_id' => $sighting->sightingId])
-            ->with('success', '目击上报成功！请为未识别动物创建档案');
+            ->with('success', 'Sighting reported successfully!  Please create a profile for the unidentified animal.');
     }
 
-    // 3. 查看志愿者的所有目击记录
+    /**
+     * Display all sighting records for the current volunteer
+     * Shows historical sighting data submitted by the logged-in volunteer
+     */
     public function index() {
         $user = $this->getLoggedInUser();
-    // 如果 Sighting 表有 volunteer_id 字段，可以按用户筛选
-    // $sightings = Sighting::where('volunteer_id', $user->id)->get();
-        $sightings = Sighting::all();  // 或显示所有记录
+        
+        // TODO: Filter by volunteer if Sighting table has volunteer_id field
+        // $sightings = Sighting::where('volunteer_id', $user->id)->get();
+        
+        // Currently shows all sighting records (can be filtered by volunteer in future)
+        $sightings = Sighting::all();
+        
         return view('sighting.index', compact('sightings'));
-}
+    }
+
+    /**
+     * Helper method:  Check if any authentication guard has a logged-in user
+     * Supports multiple user types (UPMUser, Manager, Volunteer)
+     */
+    protected function isAnyGuardLoggedIn(): bool {
+        return Auth::guard('web')->check() || 
+               Auth::guard('manager')->check() || 
+               Auth::guard('volunteer')->check();
+    }
+
+    /**
+     * Helper method: Get the currently logged-in user from any guard
+     * Returns the user instance regardless of which guard they're authenticated with
+     */
+    protected function getLoggedInUser() {
+        if (Auth::guard('web')->check()) {
+            return Auth::guard('web')->user();
+        }
+        if (Auth::guard('manager')->check()) {
+            return Auth::guard('manager')->user();
+        }
+        if (Auth::guard('volunteer')->check()) {
+            return Auth::guard('volunteer')->user();
+        }
+        return null;
+    }
 }

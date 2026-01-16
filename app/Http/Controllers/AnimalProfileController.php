@@ -77,11 +77,17 @@ class AnimalProfileController extends Controller {
             'color' => 'required|string',
             'size' => 'required|in:small,medium,large',
             'markings' => 'required|string',
-            'photo_urls' => 'required|array|min:1',
-            'photo_urls.*' => 'url',
-            'initial_sighting_id' => 'required|exists:sightings,sightingId'
-        ]);
-
+            'photo_urls' => 'required|string', 
+            'initial_sighting_id' => 'required|exists: sightings,sightingId'
+    ]);
+        $photoUrls = array_map('trim', explode(',', $validated['photo_urls']));
+    
+    // Validate each URL
+        foreach ($photoUrls as $url) {
+            if (!filter_var($url, FILTER_VALIDATE_URL)) {
+                return back()->withErrors(['photo_urls' => 'All photo URLs must be valid URLs']);
+            }
+        }
         // Get initial sighting record
         $initialSighting = Sighting::findOrFail($validated['initial_sighting_id']);
 
@@ -94,7 +100,7 @@ class AnimalProfileController extends Controller {
             'color' => $validated['color'],
             'size' => $validated['size'],
             'markings' => $validated['markings'],
-            'photoUrls' => $validated['photo_urls'],
+            'photoUrls' => $photoUrls,
             'last_sighting_time' => $initialSighting->sightingTime,
             'last_sighting_location' => $initialSighting->location
         ]);
@@ -117,16 +123,21 @@ class AnimalProfileController extends Controller {
             'color' => 'nullable|string',
             'size' => 'nullable|in:small,medium,large',
             'markings' => 'nullable|string',
-            'photo_urls' => 'nullable|array',
-            'photo_urls.*' => 'url',
+            'photo_urls' => 'nullable|string',
             'status' => 'nullable|string'
         ]);
-
-        // Only update provided fields (filter null values)
-        $animal->update(array_filter($validated));
-
-        return redirect()->route('animal.show', $animal->animalId)
-            ->with('success', 'Animal profile updated successfully!');
+        // Process photo_urls (if provided).
+        if (! empty($validated['photo_urls'])) {
+            $photoUrls = array_map('trim', explode(',', $validated['photo_urls']));
+        
+            // Validate each URL
+            foreach ($photoUrls as $url) {
+                if (! filter_var($url, FILTER_VALIDATE_URL)) {
+                    return back()->withErrors(['photo_urls' => 'All photo URLs must be valid URLs']);
+                }
+            }
+        }
+        $validated['photo_urls'] = $photoUrls;
     }
 
     // 4. View single animal profile
