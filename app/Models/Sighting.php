@@ -19,7 +19,7 @@ class Sighting extends Model {
 
     // 关联：一个目击记录属于一个动物
     public function animal() {
-        return $this->belongsTo(Animal::class, 'animalId', 'animalId');
+        return $this->belongsTo(Animal:: class, 'animalId', 'animalId');
     }
 
     // 关联：一个目击记录属于一个志愿者
@@ -30,7 +30,14 @@ class Sighting extends Model {
     // 新增：创建时自动填充志愿者ID（当前登录志愿者）
     protected static function booted() {
         static::creating(function ($sighting) {
-            $sighting->volunteerId = Auth::user()->id;
+            // 尝试从多个 guard 获取当前登录用户
+            $user = Auth:: guard('volunteer')->user() 
+                    ?? Auth::guard('web')->user() 
+                    ??  Auth::user();
+            
+            if ($user) {
+                $sighting->volunteerId = $user->id;
+            }
         });
     }
 }

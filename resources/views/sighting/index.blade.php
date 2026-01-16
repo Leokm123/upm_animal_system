@@ -50,7 +50,7 @@
                         <!-- Check if animal is identified or unidentified -->
                         @if($sighting->animalId != 'UNIDENTIFIED')
                             <!-- Link to animal profile if identified -->
-                            <a href="{{ route('animal. show', $sighting->animalId) }}">
+                            <a href="{{ route('animal.show', $sighting->animalId) }}">
                                 {{ $sighting->animal->name ??  'Animal Profile' }}
                             </a>
                         @else

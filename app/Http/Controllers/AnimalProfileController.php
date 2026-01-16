@@ -78,7 +78,7 @@ class AnimalProfileController extends Controller {
             'size' => 'required|in:small,medium,large',
             'markings' => 'required|string',
             'photo_urls' => 'required|string', 
-            'initial_sighting_id' => 'required|exists: sightings,sightingId'
+            'initial_sighting_id' => 'required|exists:sightings,sightingId'
     ]);
         $photoUrls = array_map('trim', explode(',', $validated['photo_urls']));
     
