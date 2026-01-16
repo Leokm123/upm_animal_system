@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>创建动物档案</title>
+    <title>Create Animal Profile</title>
     <style>
         .container { width: 600px; margin: 50px auto; padding: 20px; border: 1px solid #eee; border-radius: 8px; }
         .form-group { margin-bottom: 20px; }
@@ -15,70 +15,75 @@
 </head>
 <body>
     <div class="container">
-        <h2>创建动物电子档案</h2>
+        <h2>Create Animal Electronic Profile</h2>
+        
+        <!-- Display success message if exists -->
         @if(session('success'))
             <div class="success">{{ session('success') }}</div>
         @endif
+        
+        <!-- Display validation errors -->
         @if($errors->any())
             <div style="color: red; margin-bottom: 15px;">{{ $errors->first() }}</div>
         @endif
 
         <form method="POST" action="{{ route('animal.store') }}">
             @csrf
-            <!-- 隐藏字段：关联初始目击ID -->
+            <!-- Hidden field: Associate with initial sighting ID -->
             <input type="hidden" name="initial_sighting_id" value="{{ request('initial_sighting_id') }}" required>
 
-            <!-- 物种 -->
+            <!-- Species input field -->
             <div class="form-group">
-                <label>物种</label>
-                <input type="text" name="species" placeholder="如：猫/狗/流浪猫（橘色）" required>
+                <label>Species</label>
+                <input type="text" name="species" placeholder="e.g.: Cat/Dog/Stray Cat (Orange)" required>
             </div>
 
-            <!-- 性别 -->
+            <!-- Gender selection -->
             <div class="form-group">
-                <label>性别</label>
+                <label>Gender</label>
                 <select name="gender" required>
-                    <option value="male">公</option>
-                    <option value="female">母</option>
-                    <option value="unknown">未知</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="unknown">Unknown</option>
                 </select>
             </div>
 
-            <!-- 预估年龄 -->
+            <!-- Estimated age input -->
             <div class="form-group">
-                <label>预估年龄（年）</label>
-                <input type="number" name="estimated_age_years" min="0" placeholder="如：2" required>
+                <label>Estimated Age (Years)</label>
+                <input type="number" name="estimated_age_years" min="0" placeholder="e.g.: 2" required>
             </div>
 
-            <!-- 颜色 -->
+            <!-- Color description -->
             <div class="form-group">
-                <label>颜色</label>
-                <input type="text" name="color" placeholder="如：橘色/黑白/棕色" required>
+                <label>Color</label>
+                <input type="text" name="color" placeholder="e.g.: Orange/Black & White/Brown" required>
             </div>
 
-            <!-- 体型 -->
+            <!-- Size category -->
             <div class="form-group">
-                <label>体型</label>
+                <label>Size</label>
                 <select name="size" required>
-                    <option value="small">小型</option>
-                    <option value="medium">中型</option>
-                    <option value="large">大型</option>
+                    <option value="small">Small</option>
+                    <option value="medium">Medium</option>
+                    <option value="large">Large</option>
                 </select>
             </div>
 
-            <!-- 特征标记 -->
+            <!-- Identifying markings - required field -->
             <div class="form-group">
-                <label>特征标记（必填）</label>
-                <textarea name="markings" rows="2" placeholder="如：左前爪白色/额头有黑斑" required></textarea>
+                <label>Identifying Markings (Required)</label>
+                <textarea name="markings" rows="2" placeholder="e.g.: White left front paw/Black spot on forehead" required></textarea>
             </div>
 
-            <!-- 照片URL -->
+            <!-- Photo URLs input -->
             <div class="form-group">
-                <label>照片URL（多个用逗号分隔）</label>
+                <label>Photo URLs (Separate multiple URLs with commas)</label>
                 <input type="text" name="photo_urls" placeholder="https://xxx.jpg,https://yyy.jpg" required>
             </div>
 
-            <button type="submit" class="btn">创建档案</button>
+            <!-- Submit button -->
+            <button type="submit" class="btn">Create Profile</button>
         </form>
     </div>
 </body>

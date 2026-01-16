@@ -96,7 +96,7 @@
 <body>
     <div class="login-box">
         <!-- Main login heading -->
-        <h2>System Login</h2>
+        <h2>UPM Stray Animal System</h2>
         
         <!-- Display authentication error messages (e.g., incorrect credentials) -->
         @if($errors->has('login'))

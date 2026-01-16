@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>我的目击记录</title>
+    <title>My Sighting Records</title>
     <style>
         .container { width: 800px; margin: 50px auto; padding: 20px; border: 1px solid #eee; border-radius: 8px; }
         table { width: 100%; border-collapse: collapse; margin: 20px 0; }
@@ -14,33 +14,43 @@
 </head>
 <body>
     <div class="container">
-        <h2>我的目击记录</h2>
-        <a href="{{ route('sighting.create') }}" class="btn">新增目击上报</a>
+        <!-- Page header with title -->
+        <h2>My Sighting Records</h2>
+        
+        <!-- Button to create new sighting report -->
+        <a href="{{ route('sighting.create') }}" class="btn">Report New Sighting</a>
+        
+        <!-- Display success message if available -->
         @if(session('success'))
             <div class="success">{{ session('success') }}</div>
         @endif
 
+        <!-- Sightings data table -->
         <table>
             <thead>
                 <tr>
-                    <<th>目击ID</</th>
-                    <<th>动物</</th>
-                    <<th>位置</</th>
-                    <<th>时间</</th>
-                    <<th>状态</</th>
+                    <th>Sighting ID</th>
+                    <th>Animal</th>
+                    <th>Location</th>
+                    <th>Time</th>
+                    <th>Status</th>
                 </tr>
             </thead>
             <tbody>
+                <!-- Loop through all sightings -->
                 @foreach($sightings as $sighting)
                 <tr>
                     <td>{{ $sighting->sightingId }}</td>
                     <td>
+                        <!-- Check if animal is identified or unidentified -->
                         @if($sighting->animalId != 'UNIDENTIFIED')
+                            <!-- Link to animal profile if identified -->
                             <a href="{{ route('animal.show', $sighting->animalId) }}">
-                                {{ $sighting->animal->name ?? '动物档案' }}
+                                {{ $sighting->animal->name ?? 'Animal Profile' }}
                             </a>
                         @else
-                            未识别（<a href="{{ route('animal.create', ['initial_sighting_id' => $sighting->sightingId]) }}">创建档案</a>）
+                            <!-- Show unidentified status with create profile link -->
+                            Unidentified (<a href="{{ route('animal.create', ['initial_sighting_id' => $sighting->sightingId]) }}">Create Profile</a>)
                         @endif
                     </td>
                     <td>{{ $sighting->location }}</td>

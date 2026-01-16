@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>{{ $animal->name ?? '动物档案' }}</title>
+    <!-- Dynamic page title using animal name or default -->
+    <title>{{ $animal->name ?? 'Animal Profile' }}</title>
     <style>
         .container { width: 600px; margin: 50px auto; padding: 20px; border: 1px solid #eee; border-radius: 8px; }
         .info-item { margin-bottom: 15px; }
@@ -15,57 +16,80 @@
 </head>
 <body>
     <div class="container">
-        <h2>动物档案详情</h2>
+        <!-- Main page heading -->
+        <h2>Animal Profile Details</h2>
+        
+        <!-- Success message display -->
         @if(session('success'))
             <div class="success">{{ session('success') }}</div>
         @endif
 
+        <!-- Animal Profile ID -->
         <div class="info-item">
-            <span class="label">档案ID：</span>
+            <span class="label">Profile ID:</span>
             <span>{{ $animal->animalId }}</span>
         </div>
+        
+        <!-- Species information -->
         <div class="info-item">
-            <span class="label">物种：</span>
+            <span class="label">Species:</span>
             <span>{{ $animal->species }}</span>
         </div>
+        
+        <!-- Gender with translation -->
         <div class="info-item">
-            <span class="label">性别：</span>
-            <span>{{ $animal->gender == 'male' ? '公' : ($animal->gender == 'female' ? '母' : '未知') }}</span>
+            <span class="label">Gender:</span>
+            <span>{{ $animal->gender == 'male' ? 'Male' : ($animal->gender == 'female' ? 'Female' : 'Unknown') }}</span>
         </div>
+        
+        <!-- Estimated age -->
         <div class="info-item">
-            <span class="label">预估年龄：</span>
-            <span>{{ $animal->estimatedAgeYears }} 年</span>
+            <span class="label">Estimated Age:</span>
+            <span>{{ $animal->estimatedAgeYears }} years</span>
         </div>
+        
+        <!-- Color information -->
         <div class="info-item">
-            <span class="label">颜色：</span>
+            <span class="label">Color:</span>
             <span>{{ $animal->color }}</span>
         </div>
+        
+        <!-- Size with translation -->
         <div class="info-item">
-            <span class="label">体型：</span>
-            <span>{{ $animal->size == 'small' ? '小型' : ($animal->size == 'medium' ? '中型' : '大型') }}</span>
+            <span class="label">Size:</span>
+            <span>{{ $animal->size == 'small' ? 'Small' : ($animal->size == 'medium' ? 'Medium' : 'Large') }}</span>
         </div>
+        
+        <!-- Distinctive markings -->
         <div class="info-item">
-            <span class="label">特征标记：</span>
+            <span class="label">Markings:</span>
             <span>{{ $animal->markings }}</span>
         </div>
+        
+        <!-- Photo gallery section -->
         <div class="info-item">
-            <span class="label">照片：</span>
+            <span class="label">Photos:</span>
             <br>
             @foreach($animal->photoUrls as $photoUrl)
-                <img src="{{ $photoUrl }}" class="photo" alt="动物照片">
+                <img src="{{ $photoUrl }}" class="photo" alt="Animal Photo">
             @endforeach
         </div>
+        
+        <!-- Last sighting information -->
         <div class="info-item">
-            <span class="label">最后目击：</span>
-            <span>{{ $animal->last_sighting_time->format('Y-m-d H:i') }}（{{ $animal->last_sighting_location }}）</span>
+            <span class="label">Last Sighting:</span>
+            <span>{{ $animal->last_sighting_time->format('Y-m-d H:i') }} ({{ $animal->last_sighting_location }})</span>
         </div>
+        
+        <!-- Current status -->
         <div class="info-item">
-            <span class="label">状态：</span>
-            <span>{{ $animal->status ?? '无' }}</span>
+            <span class="label">Status:</span>
+            <span>{{ $animal->status ?? 'None' }}</span>
         </div>
 
-        <a href="{{ route('animal.edit', $animal->animalId) }}" class="btn btn-edit">编辑档案</a>
-        <a href="{{ route('sighting.create') }}" class="btn">上报新目击</a>
+        <!-- Action buttons -->
+        <a href="{{ route('animal.edit', $animal->animalId) }}" class="btn btn-edit">Edit Profile</a>
+        <a href="{{ route('sighting.create') }}" class="btn">Report New Sighting</a>
     </div>
 </body>
 </html>
