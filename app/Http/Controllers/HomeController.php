@@ -6,15 +6,15 @@ use Illuminate\Http\Request;
 class HomeController extends Controller
 {
     /**
-     * 系统仪表盘（兼容多Guard登录）
+     * System Dashboard (Multi-Guard Login Support)
      */
     public function dashboard()
     {
-        // 1. 检查多Guard登录状态
+        // Check multi-guard login status
         if (!$this->isAnyGuardLoggedIn()) {
-            return redirect()->route('login')->withErrors('请先登录！');
+            return redirect()->route('login')->withErrors('Please login first!');
         }
-        // 2. 获取当前登录用户并赋值角色到Session
+        // Get current user and set role to session
         $user = $this->getLoggedInUser();
         session(['user_role' => $this->getUserRole($user)]);
         
