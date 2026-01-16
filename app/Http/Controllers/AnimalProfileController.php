@@ -24,6 +24,12 @@ class AnimalProfileController extends Controller {
         });
     }
 
+    // List all animal profiles
+    public function index() {
+        $animals = Animal::orderBy('created_at', 'desc')->get();
+        return view('animal.index', compact('animals'));
+    }
+    
     // 1. Animal profile query matching (match existing profiles based on sighting data)
     public function matchProfiles(Request $request) {
         $sightingData = $request->validate([

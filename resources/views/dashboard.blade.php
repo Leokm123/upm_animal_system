@@ -56,7 +56,7 @@
                 <!-- Core volunteer features for animal sighting management -->
                 <a href="{{ route('sighting.create') }}" class="nav-item">📝 Report Animal Sighting</a>
                 <a href="{{ route('sighting.index') }}" class="nav-item">📜 View My Sighting Records</a>
-                <a href="{{ route('animal.create') }}" class="nav-item">🐾 Create Animal Profile</a>
+                <a href="{{ route('animal.index') }}" class="nav-item">🐾 Manage Animal Profiles</a>
             </div>
             @endif
 

@@ -7,17 +7,21 @@ use App\Http\Controllers\AnimalProfileController; // 引入动物档案控制器
 use App\Http\Controllers\SightingController; // 引入目击控制器
 
 Route::get('/login', function () { return view('auth.login'); })->name('login');
-Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
-Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::post('/login', [AuthController:: class, 'login'])->name('login.submit');
+Route::get('/logout', [AuthController:: class, 'logout'])->name('logout');
 Route::get('/dashboard', [HomeController::class, 'dashboard'])->name('dashboard');
 
 // ====== 动物目击模块路由 ======
 Route::get('/sighting/report', [SightingController::class, 'create'])->name('sighting.create');
-Route::post('/sighting/report', [SightingController::class, 'reportSighting'])->name('sighting.report');
+Route::post('/sighting/report', [SightingController:: class, 'reportSighting'])->name('sighting.report');
 Route::get('/sightings', [SightingController::class, 'index'])->name('sighting.index');
 
 // ====== 动物档案模块路由 ======
 Route::post('/animal/match', [AnimalProfileController::class, 'matchProfiles'])->name('animal.match');
+
+// 新增：动物列表页面路由（放在 /animal/create 之前）
+Route::get('/animals', [AnimalProfileController::class, 'index'])->name('animal.index')->middleware('auth.any');
+
 Route::get('/animal/create', function () {
     return view('animal.create');
 })->name('animal.create')->middleware('auth.any');
