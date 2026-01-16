@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<! DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -9,8 +9,9 @@
         .info-item { margin-bottom: 15px; }
         .label { font-weight: bold; display: inline-block; width: 120px; }
         .photo { margin: 10px 0; max-width: 200px; height: auto; }
-        .btn { display: inline-block; padding: 8px 16px; margin-right: 10px; background: #2196F3; color: white; text-decoration: none; border-radius: 4px; }
+        .btn { display: inline-block; padding: 8px 16px; margin-right: 10px; margin-bottom: 10px; background: #2196F3; color: white; text-decoration: none; border-radius: 4px; }
         .btn-edit { background: #FFC107; }
+        .btn-back { background: #6c757d; }
         .success { color: green; margin-bottom: 15px; }
     </style>
 </head>
@@ -39,7 +40,7 @@
         <!-- Gender with translation -->
         <div class="info-item">
             <span class="label">Gender:</span>
-            <span>{{ $animal->gender == 'male' ? 'Male' : ($animal->gender == 'female' ? 'Female' : 'Unknown') }}</span>
+            <span>{{ $animal->gender == 'male' ?  'Male' : ($animal->gender == 'female' ? 'Female' : 'Unknown') }}</span>
         </div>
         
         <!-- Estimated age -->
@@ -57,7 +58,7 @@
         <!-- Size with translation -->
         <div class="info-item">
             <span class="label">Size:</span>
-            <span>{{ $animal->size == 'small' ? 'Small' : ($animal->size == 'medium' ? 'Medium' : 'Large') }}</span>
+            <span>{{ $animal->size == 'small' ? 'Small' : ($animal->size == 'medium' ?  'Medium' : 'Large') }}</span>
         </div>
         
         <!-- Distinctive markings -->
@@ -88,6 +89,7 @@
         </div>
 
         <!-- Action buttons -->
+        <a href="{{ route('dashboard') }}" class="btn btn-back">← Back to Dashboard</a>
         <a href="{{ route('animal.edit', $animal->animalId) }}" class="btn btn-edit">Edit Profile</a>
         <a href="{{ route('sighting.create') }}" class="btn">Report New Sighting</a>
     </div>
