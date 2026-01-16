@@ -1,20 +1,20 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AuthController; // Import login controller
+use App\Http\Controllers\AuthController;
 
-// 1. Login page: Access http://localhost/upm-animal-system/public/login to display login page
+// Login page
 Route::get('/login', function () {
-    return view('auth.login'); // Corresponds to resources/views/auth/login.blade.php
-})->name('login'); // Name the route as login
+    return view('auth.login');
+})->name('login');
 
-// 2. Login submission: Accept POST request from login form, call AuthController's login method
-Route::post('/login', [AuthController::class, 'login'])->name('login.submit'); // Named as login.submit
+// Login submit
+Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
 
-// 3. Dashboard: Must be logged in to access, will redirect to login page if not authenticated
+// Dashboard: allow all three guards
 Route::get('/dashboard', function () {
-    return view('dashboard'); // Corresponds to resources/views/dashboard.blade.php
-})->name('dashboard')->middleware('auth'); // middleware('auth'): Verify login status
+    return view('dashboard');
+})->name('dashboard')->middleware('auth:web,manager,volunteer');
 
-// 4. Logout: Must be logged in to access, call AuthController's logout method
-Route::get('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
+// Logout
+Route::get('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth:web,manager,volunteer');
