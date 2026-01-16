@@ -6,14 +6,16 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AnimalProfileController; // 引入动物档案控制器
 use App\Http\Controllers\SightingController; // 引入目击控制器
 
-Route::get('/login', function () { return view('auth.login'); })->name('login');
-Route::post('/login', [AuthController:: class, 'login'])->name('login.submit');
-Route::get('/logout', [AuthController:: class, 'logout'])->name('logout');
+Route::get('/login', function () {
+    return view('auth.login');
+})->name('login');
+Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
+Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::get('/dashboard', [HomeController::class, 'dashboard'])->name('dashboard');
 
 // ====== 动物目击模块路由 ======
 Route::get('/sighting/report', [SightingController::class, 'create'])->name('sighting.create');
-Route::post('/sighting/report', [SightingController:: class, 'reportSighting'])->name('sighting.report');
+Route::post('/sighting/report', [SightingController::class, 'reportSighting'])->name('sighting.report');
 Route::get('/sightings', [SightingController::class, 'index'])->name('sighting.index');
 
 // ====== 动物档案模块路由 ======
@@ -32,3 +34,11 @@ Route::get('/animal/{animalId}/edit', function ($animalId) {
     return view('animal.edit', compact('animal'));
 })->name('animal.edit')->middleware('auth.any');
 Route::post('/animal/{animalId}/update', [AnimalProfileController::class, 'updateProfile'])->name('animal.update');
+
+// API路由：获取最新动物记录（仅限AJAX）
+// 显示报告表单
+Route::get('/report', [SightingController::class, 'report'])->name('sighting.report');
+// 处理表单提交
+Route::post('/report', [SightingController::class, 'store']);
+// AJAX接口：获取最新动物列表
+Route::get('/api/animals', [SightingController::class, 'getAnimals'])->name('api.animals');
