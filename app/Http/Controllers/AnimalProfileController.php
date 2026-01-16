@@ -113,32 +113,69 @@ class AnimalProfileController extends Controller {
     }
 
     // 3. Update existing animal profile
-    public function updateProfile(Request $request, $animalId) {
-        $animal = Animal::findOrFail($animalId);
+public function updateProfile(Request $request, $animalId) {
+    $animal = Animal::findOrFail($animalId);
 
-        $validated = $request->validate([
-            'species' => 'nullable|string',
-            'gender' => 'nullable|in:male,female,unknown',
-            'estimated_age_years' => 'nullable|integer|min:0',
-            'color' => 'nullable|string',
-            'size' => 'nullable|in:small,medium,large',
-            'markings' => 'nullable|string',
-            'photo_urls' => 'nullable|string',
-            'status' => 'nullable|string'
-        ]);
-        // Process photo_urls (if provided).
-        if (! empty($validated['photo_urls'])) {
-            $photoUrls = array_map('trim', explode(',', $validated['photo_urls']));
-        
-            // Validate each URL
-            foreach ($photoUrls as $url) {
-                if (! filter_var($url, FILTER_VALIDATE_URL)) {
-                    return back()->withErrors(['photo_urls' => 'All photo URLs must be valid URLs']);
-                }
+    $validated = $request->validate([
+        'species' => 'nullable|string',
+        'gender' => 'nullable|in:male,female,unknown',
+        'estimated_age_years' => 'nullable|integer|min:0',
+        'color' => 'nullable|string',
+        'size' => 'nullable|in:small,medium,large',
+        'markings' => 'nullable|string',
+        'photo_urls' => 'nullable|string',
+        'status' => 'nullable|string'
+    ]);
+
+    // Process photo_urls (if provided)
+    if (!empty($validated['photo_urls'])) {
+        $photoUrls = array_map('trim', explode(',', $validated['photo_urls']));
+    
+        // Validate each URL
+        foreach ($photoUrls as $url) {
+            if (!filter_var($url, FILTER_VALIDATE_URL)) {
+                return back()->withErrors(['photo_urls' => 'All photo URLs must be valid URLs']);
             }
         }
-        $validated['photo_urls'] = $photoUrls;
+    } else {
+        $photoUrls = $animal->photoUrls; // Keep existing photos if not provided
     }
+
+    // Build update data array
+    $updateData = [];
+    
+    if (! empty($validated['species'])) {
+        $updateData['species'] = $validated['species'];
+    }
+    if (!empty($validated['gender'])) {
+        $updateData['gender'] = $validated['gender'];
+    }
+    if (isset($validated['estimated_age_years'])) {
+        $updateData['estimatedAgeYears'] = $validated['estimated_age_years'];
+    }
+    if (!empty($validated['color'])) {
+        $updateData['color'] = $validated['color'];
+    }
+    if (!empty($validated['size'])) {
+        $updateData['size'] = $validated['size'];
+    }
+    if (!empty($validated['markings'])) {
+        $updateData['markings'] = $validated['markings'];
+    }
+    if (!empty($photoUrls)) {
+        $updateData['photoUrls'] = $photoUrls;
+    }
+    if (isset($validated['status'])) {
+        $updateData['status'] = $validated['status'];
+    }
+
+    // Update the animal record
+    $animal->update($updateData);
+
+    // Redirect to dashboard with success message
+    return redirect()->route('dashboard')
+        ->with('success', 'Animal profile updated successfully!');
+}
 
     // 4. View single animal profile
     public function show($animalId) {
