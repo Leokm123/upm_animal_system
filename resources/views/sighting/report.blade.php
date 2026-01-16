@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<! DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -6,16 +6,21 @@
     <style>
         .container { width: 600px; margin: 50px auto; padding: 20px; border: 1px solid #eee; border-radius: 8px; }
         .form-group { margin-bottom: 20px; }
-        label { display: block; margin-bottom: 8px; font-weight: bold; }
-        input, textarea, select { width: 100%; padding: 10px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 4px; }
+        label { display:  block; margin-bottom: 8px; font-weight: bold; }
+        input, textarea, select { width: 100%; padding:  10px; box-sizing:  border-box; border: 1px solid #ddd; border-radius: 4px; }
         .btn { padding: 12px 20px; background: #2196F3; color: white; border: none; border-radius: 4px; cursor: pointer; }
         .btn:hover { background: #1976D2; }
+        .btn-back { display: inline-block; padding: 10px 20px; background: #757575; color: white; text-decoration: none; border-radius:  4px; margin-bottom: 20px; }
+        .btn-back:hover { background: #616161; }
         .error { color: red; margin-bottom: 15px; }
         small { color: #666; font-size: 0.9em; }
     </style>
 </head>
 <body>
     <div class="container">
+        <!-- Back to Dashboard button -->
+        <a href="{{ route('dashboard') }}" class="btn-back">⬅ Back to Dashboard</a>
+        
         <!-- Main page heading for sighting report -->
         <h2>Report Animal Sighting</h2>
         

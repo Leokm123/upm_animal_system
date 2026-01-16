@@ -6,15 +6,20 @@
     <style>
         .container { width: 600px; margin: 50px auto; padding: 20px; border: 1px solid #eee; border-radius: 8px; }
         .form-group { margin-bottom: 20px; }
-        label { display: block; margin-bottom: 8px; font-weight: bold; }
-        input, select, textarea { width: 100%; padding: 10px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 4px; }
+        label { display:  block; margin-bottom: 8px; font-weight: bold; }
+        input, select, textarea { width: 100%; padding:  10px; box-sizing:  border-box; border: 1px solid #ddd; border-radius: 4px; }
         .btn { padding: 12px 20px; background: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer; }
         .btn:hover { background: #388E3C; }
-        .success { color: green; margin-bottom: 15px; }
+        .btn-back { display: inline-block; padding: 10px 20px; background: #757575; color: white; text-decoration:  none; border-radius: 4px; margin-bottom: 20px; }
+        .btn-back:hover { background: #616161; }
+        .success { color: green; margin-bottom:  15px; }
     </style>
 </head>
 <body>
     <div class="container">
+        <!-- Back to Dashboard button -->
+        <a href="{{ route('dashboard') }}" class="btn-back">⬅ Back to Dashboard</a>
+        
         <h2>Create Animal Electronic Profile</h2>
         
         <!-- Display success message if exists -->
@@ -29,7 +34,7 @@
 
         <form method="POST" action="{{ route('animal.store') }}">
             @csrf
-            <!-- Hidden field: Associate with initial sighting ID -->
+            <!-- Hidden field:  Associate with initial sighting ID -->
             <input type="hidden" name="initial_sighting_id" value="{{ request('initial_sighting_id') }}" required>
 
             <!-- Species input field -->
@@ -57,7 +62,7 @@
             <!-- Color description -->
             <div class="form-group">
                 <label>Color</label>
-                <input type="text" name="color" placeholder="e.g.: Orange/Black & White/Brown" required>
+                <input type="text" name="color" placeholder="e.g.:  Orange/Black & White/Brown" required>
             </div>
 
             <!-- Size category -->
