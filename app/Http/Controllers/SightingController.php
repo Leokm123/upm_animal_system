@@ -70,6 +70,9 @@ class SightingController extends Controller {
     // 3. 查看志愿者的所有目击记录
     public function index() {
         $user = $this->getLoggedInUser();
+    // 如果 Sighting 表有 volunteer_id 字段，可以按用户筛选
+    // $sightings = Sighting::where('volunteer_id', $user->id)->get();
+        $sightings = Sighting::all();  // 或显示所有记录
         return view('sighting.index', compact('sightings'));
-    }
+}
 }
