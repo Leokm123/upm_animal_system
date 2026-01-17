@@ -66,6 +66,13 @@
                 <h3>Manager Function Center</h3>
                 {{-- TODO: Add manager-specific navigation items here --}}
                 <!-- Features like:  user management, system reports, data analytics -->
+                 {{-- Manager Feeding Point & Task Management Navigation --}}
+                  <a href="/manager/create-feeding-point" style="display:block; margin:8px 0; color:#009688; text-decoration:none;">➡ Create Feeding Point</a>
+                  <a href="/manager/feeding-point-list" style="display:block; margin:8px 0; color:#009688; text-decoration:none;">➡ View All Feeding Points</a>
+                  <a href="/manager/assign-task" style="display:block; margin:8px 0; color:#009688; text-decoration:none;">➡ Assign Task to Volunteer</a>
+                  <a href="/manager/task-list" style="display:block; margin:8px 0; color:#009688; text-decoration:none;">➡ View All Assigned Tasks</a>
+                  <a href="/manager/volunteer-report" style="display:block; margin:8px 0; color:#009688; text-decoration:none;">➡ Volunteer Task Report</a>
+                  <a href="/manager/view-reports" style="display:block; margin:8px 0; color:#009688; text-decoration:none;">➡ View All Task Reports</a>
             </div>
             @endif
 
